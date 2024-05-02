@@ -9,9 +9,6 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
 
-  const connection = app.get(getConnectionToken());
-  await connection.runMigrations({ transaction: 'all' });
-
   const configSwagger = new DocumentBuilder()
     .setTitle('Satoshi - Test API')
     .setDescription('API documentation for the test')
