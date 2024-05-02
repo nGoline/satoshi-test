@@ -1,29 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Home from './Home'; // Assuming you have a Home component
+import Login from './Login';
+import Signup from './Signup';
 
-function App() {
-  const [data, setData] = useState({ message: '' });
-
-  useEffect(() => {
-    fetch('http://localhost:3001/')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        } else {
-          return response.json();
-        }
-      })
-      .then(data => setData(data))
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setData({ message: 'Error fetching data' });
-      });
-  }, []);
-
+const App: React.FC = () => {
   return (
-    <div className="flex justify-center items-center h-screen bg-black">
-      <h1 className="text-orange-500 text-4xl font-bold">{data.message || 'Loading...'}</h1>
-    </div>
+    <Router>
+      <div className="min-h-screen bg-gray-800 text-white">
+        <header className="bg-gray-900 p-4">
+          <h1 className="text-xl font-bold">Satoshi Test</h1>
+          <nav>
+            <ul className="flex space-x-4">
+              <li>
+                <Link to="/" className="hover:text-orange-500">Home</Link>
+              </li>
+              <li>
+                <Link to="/login" className="hover:text-orange-500">Login</Link>
+              </li>
+              <li>
+                <Link to="/signup" className="hover:text-orange-500">Signup</Link>
+              </li>
+            </ul>
+          </nav>
+        </header>
+        <main className="p-8">
+          <Routes> {/* Changed from Switch to Routes */}
+            <Route path="/" element={<Home />} /> {/* Updated Route syntax */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
