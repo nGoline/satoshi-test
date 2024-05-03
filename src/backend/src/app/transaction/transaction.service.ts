@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { TransactionStatus } from 'src/database/transaction/transaction.entity';
 import { TransactionRepository } from 'src/database/transaction/transaction.repository';
 
 @Injectable()
@@ -18,7 +19,21 @@ export class TransactionService {
     }
   }
 
-  async updateTransaction(transactionId: string, status: number) {
-    return this.transactionRepository.updateTransaction(transactionId, status);
+  async updateTransaction(transactionId: string, status: TransactionStatus) {
+    try {
+      return this.transactionRepository.updateTransaction(transactionId, status);
+    } catch (error) {
+      this.logger.error(`Error updating Transaction: ${error}`);
+      console.log(error);
+    }
+  }
+
+  async getTransactionsByWalletId(walletId: string) {
+    try {
+      return this.transactionRepository.findTransactionsByWalletId(walletId);
+    } catch (error) {
+      this.logger.error(`Error getting Transactions by Wallet ID ${walletId}: ${error}`);
+      console.log(error);
+    }
   }
 }

@@ -26,18 +26,22 @@ export class AuthController {
     })
     @Post('login')
     async login(@Body() body: LoginDTO): Promise<UserResponseDTO> {
-        const user = await this.authService.validateUser(body.email, body.password);
-        if (!user) {
-            throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-        }
+        try {
+            const user = await this.authService.validateUser(body.email, body.password);
+            if (!user) {
+                throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+            }
 
-        // Get wallet data
-        const wallet = await this.walletService.getWalletByUserId(user.id);
-        if (!wallet) {
-            throw new HttpException('Wallet not found for user, contact support.', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            // Get wallet data
+            const wallet = await this.walletService.getWalletByUserId(user.id);
+            if (!wallet) {
+                throw new HttpException('Wallet not found for user, contact support.', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
-        return new UserResponseDTO(user.id, user.email, wallet.id);
+            return new UserResponseDTO(user.id, user.email, wallet.id);
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOkResponse({
