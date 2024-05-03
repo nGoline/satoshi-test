@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const NavigationComponent: React.FC = () => {
-    const { isAuthenticated, logout } = useAuth();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const { user, isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -20,11 +21,17 @@ const NavigationComponent: React.FC = () => {
                             <Link to="/wallet">Wallet</Link>
                         </li>
                         <li>
+                            My user ID: {user?.id}
+                        </li>
+                        <li>
                             <button onClick={handleLogout}>Logout</button>
                         </li>
                     </>
                 ) : (
                     <>
+                        <li>
+                            <Link to="/">Home</Link>
+                        </li>
                         <li>
                             <Link to="/login">Login</Link>
                         </li>

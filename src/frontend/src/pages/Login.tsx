@@ -30,7 +30,7 @@ const Login: React.FC<LoginProps> = () => {
             if (response.ok) {
                 console.log('Login successful:', data);
                 // set auth status
-                setAuthStatus(data.id, data.walletId);
+                setAuthStatus(data);
                 // redirect to wallet page
                 navigate('/wallet');
             } else {

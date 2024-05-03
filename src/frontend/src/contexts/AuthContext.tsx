@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface AuthContextType {
-    userId: string | null;
-    walletId: string | null;
+    user: any | null;
     isAuthenticated: boolean;
-    setAuthStatus: (userId: string, walletId: string) => void;
+    setAuthStatus: (user: any) => void;
     logout: () => void;
 }
 
@@ -15,43 +14,35 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [userId, setUserId] = useState<string | null>(localStorage.getItem('userId'));
-    const [walletId, setWalletId] = useState<string | null>(localStorage.getItem('walletId'));
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!userId && !!walletId);
-
+    const [user, setUser] = useState<any | null>(JSON.parse(localStorage.getItem('user') || '{}'));
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!user && !!user.id && !!user.walletId);
 
     useEffect(() => {
-        const userId = localStorage.getItem('userId');
-        const walletId = localStorage.getItem('walletId');
-        if (!userId || !walletId) {
-            setUserId(userId);
-            setWalletId(walletId);
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!user || !user.id || !user.walletId) {
+            console.log('User is not authenticated');
+        } else {
+            setUser(user);
             setIsAuthenticated(true);
         }
     }, []);
 
-    const setAuthStatus = (userId: string, walletId: string) => {
-        setUserId(userId);
-        localStorage.setItem('userId', userId);
-
-        setWalletId(walletId);
-        localStorage.setItem('walletId', walletId);
+    const setAuthStatus = (user: any) => {
+        setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
 
         setIsAuthenticated(true);
     };
 
     const logout = () => {
-        setUserId(null);
-        localStorage.removeItem('userId');
-
-        setWalletId(null);
-        localStorage.removeItem('walletId');
+        setUser(null);
+        localStorage.removeItem('user');
 
         setIsAuthenticated(false);
     };
 
     return (
-        <AuthContext.Provider value={{ userId, walletId, isAuthenticated, setAuthStatus, logout }}>
+        <AuthContext.Provider value={{ user, isAuthenticated, setAuthStatus, logout }}>
             {children}
         </AuthContext.Provider>
     );

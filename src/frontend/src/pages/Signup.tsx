@@ -30,7 +30,7 @@ const Signup: React.FC<SignupProps> = () => {
             if (response.ok) {
                 console.log('Signup successful:', data);
                 // set auth status
-                setAuthStatus(data.id, data.walletId);
+                setAuthStatus(data);
                 // redirect to wallet page
                 navigate('/wallet');
             } else {

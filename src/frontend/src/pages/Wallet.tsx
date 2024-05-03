@@ -2,32 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Wallet = () => {
-    const { userId, walletId, isAuthenticated } = useAuth();
+    const { user, isAuthenticated } = useAuth();
     const [balance, setBalance] = useState(0);
     const [amount, setAmount] = useState('');
     const [receiverId, setReceiverId] = useState('');
 
     useEffect(() => {
-        if (!isAuthenticated || !userId || !walletId) return;
+        if (!isAuthenticated || !user || !user.id || !user.walletId) return;
 
         fetchBalance();
-    }, [userId, walletId, isAuthenticated]);
+    }, [user, isAuthenticated]);
 
     const fetchBalance = async () => {
-        if (!walletId) return;
+        if (!user || !user.walletId) return;
 
-        const response = await fetch(`http://localhost:3001/wallets/${walletId}/balance`);
+        const response = await fetch(`http://localhost:3001/wallets/${user.walletId}/balance`);
         const data = await response.json();
         setBalance(data.balance);
     };
 
     const handleSendTokens = async () => {
-        if (!walletId || !userId || !receiverId) return;
+        if (!user || !user.id || !user.walletId || !receiverId) return;
 
         const response = await fetch('http://localhost:3001/transactions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ senderId: userId, receiverId, amount: Number(amount) })
+            body: JSON.stringify({ senderId: user.id, receiverId, amount: Number(amount) })
         });
         if (response.ok) {
             setAmount('');
