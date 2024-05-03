@@ -20,3 +20,7 @@ To stop the app, run the following command:
 ```bash
 ./stop.sh
 ```
+
+## Swagger
+
+The backend API has Swagger documentation available at `http://localhost:3001/api`.

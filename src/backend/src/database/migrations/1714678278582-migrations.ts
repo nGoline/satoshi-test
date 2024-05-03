@@ -24,9 +24,9 @@ export class Migrations1714678278582 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-      DROP TABLE "users";
       DROP INDEX "idx_users_email";
       DROP INDEX "idx_users_username";
+      DROP TABLE "users";
       DROP EXTENSION citext;
     `);
   }
