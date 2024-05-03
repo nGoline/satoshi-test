@@ -14,12 +14,11 @@ const App: React.FC = () => {
     <div>
       <ToastContainer
         position="top-right"
-        autoClose={5000} hideProgressBar={false}
+        autoClose={5000}
         newestOnTop={false}
         closeOnClick
         rtl={false}
-        pauseOnFocusLoss
-        draggable
+        pauseOnFocusLoss={false}
         pauseOnHover
         toastClassName="relative flex p-1 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
         bodyClassName="text-sm font-white font-med block p-3" />

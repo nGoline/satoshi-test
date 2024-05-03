@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { useAuth } from '../contexts/AuthContext';
 
 const Wallet = () => {
@@ -24,17 +25,31 @@ const Wallet = () => {
     const handleSendTokens = async () => {
         if (!user || !user.id || !user.walletId || !receiverId) return;
 
-        const response = await fetch('http://localhost:3001/transactions', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ senderId: user.id, receiverId, amount: Number(amount) })
-        });
-        if (response.ok) {
-            setAmount('');
-            setReceiverId('');
-            fetchBalance();
-        } else {
-            alert('Failed to send tokens');
+        try {
+            const response = await fetch('http://localhost:3001/wallets/send-tokens', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ senderId: user.id, receiverId, amount: Number(amount) })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                toast.success('Tokens sent successfully');
+                setAmount('');
+                setReceiverId('');
+                setBalance(data.balance);
+                fetchBalance();
+            } else {
+                if (Array.isArray(data.message)) {
+                    data.message.forEach((message: any) => {
+                        toast.error(message);
+                    });
+                } else {
+                    toast.error(data.message || 'Failed to login');
+                }
+            }
+        } catch (error) {
+            toast.error('Failed to send tokens. Please check your connection and try again.');
+            console.error('Send tokens error:', error);
         }
     };
 

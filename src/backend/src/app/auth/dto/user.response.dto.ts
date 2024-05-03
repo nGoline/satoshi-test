@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class UserDTO {
+export class UserResponseDTO {
     constructor(id: string, email: string, walletId: string) {
         this.id = id;
         this.email = email;

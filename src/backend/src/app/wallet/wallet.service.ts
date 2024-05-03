@@ -16,10 +16,28 @@ export class WalletService {
   }
 
   async sendTokens(senderId: string, receiverId: string, amount: number): Promise<number> {
+    const senderWallet = await this.walletRepository.findOneByUserId(senderId);
+    if (!senderWallet) {
+      throw new Error('Sender wallet not found');
+    }
+
+    const senderWalletId = senderWallet.id;
+
+    const receiverWallet = await this.walletRepository.findOneByUserId(receiverId);
+    if (!receiverWallet) {
+      throw new Error('Receiver wallet not found');
+    }
+
+    const receiverWalletId = receiverWallet.id;
+
+    if (senderWalletId === receiverWalletId) {
+      throw new Error('Sender and receiver wallets cannot be the same');
+    }
+
     return this.walletRepository.manager.transaction(async (entityManager: EntityManager) => {
       // Lock the sender row using a pessimistic write lock
       const senderWallet = await entityManager.findOne(WalletEntity, {
-        where: { id: senderId },
+        where: { id: senderWalletId },
         lock: { mode: 'pessimistic_write' }
       });
 
@@ -29,7 +47,7 @@ export class WalletService {
 
       // Lock the receiver row using a pessimistic write lock
       const receiverWallet = await entityManager.findOne(WalletEntity, {
-        where: { id: receiverId },
+        where: { id: receiverWalletId },
         lock: { mode: 'pessimistic_write' }
       });
 
