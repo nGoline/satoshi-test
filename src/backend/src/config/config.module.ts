@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestjsConfigModule } from '@nestjs/config';
 import databaseConfig from './database.config';
+import pinoConfig from './pino.config';
 
 @Module({
   imports: [
@@ -8,6 +9,7 @@ import databaseConfig from './database.config';
       isGlobal: true,
       load: [
         databaseConfig,
+        pinoConfig
       ],
     }),
   ],

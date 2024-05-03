@@ -3,7 +3,7 @@
 # Build and start the containers
 if docker-compose up -d --build; then
   # Wait for the backend to start
-  while ! curl -s -f http://localhost:3001 > /dev/null; do
+  while ! curl -s -f http://localhost:3000 > /dev/null; do
     sleep 1
   done
 

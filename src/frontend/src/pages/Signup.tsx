@@ -1,4 +1,7 @@
 import React, { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useAuth } from '../contexts/AuthContext';
 
 interface SignupProps {
 }
@@ -10,6 +13,8 @@ interface SignupState {
 
 const Signup: React.FC<SignupProps> = () => {
     const [credentials, setCredentials] = useState<SignupState>({ email: '', password: '' });
+    const navigate = useNavigate();
+    const { setAuthStatus } = useAuth();
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -24,10 +29,15 @@ const Signup: React.FC<SignupProps> = () => {
             const data = await response.json();
             if (response.ok) {
                 console.log('Signup successful:', data);
+                // set auth status
+                setAuthStatus(data);
+                // redirect to wallet page
+                navigate('/wallet');
             } else {
-                throw new Error(data.message || 'Failed to signup');
+                toast.error(data.message || 'Failed to signup');
             }
         } catch (error) {
+            toast.error('Signup failed. Please check your connection and try again.');
             console.error('Signup error:', error);
         }
     };

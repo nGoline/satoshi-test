@@ -2,15 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { getConnectionToken } from '@nestjs/typeorm';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  app.useLogger(app.get(Logger));
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
   app.useGlobalPipes(new ValidationPipe());
-
-  const connection = app.get(getConnectionToken());
-  await connection.runMigrations({ transaction: 'all' });
 
   const configSwagger = new DocumentBuilder()
     .setTitle('Satoshi - Test API')
